@@ -3,6 +3,13 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 const allRoutes = require("./routes");
+const db = require("./db");
+
+db.then(() => {
+    console.log("connected to db")
+}).catch(() => {
+    console.log("error connecting to db")
+});
 
 app.use(express.json());
 app.use(allRoutes);
