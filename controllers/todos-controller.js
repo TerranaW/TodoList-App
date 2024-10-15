@@ -4,42 +4,46 @@ module.exports = {
     getAllTodo: async (req, res) => {
         const data = await Todos.find({})
         res.json({
-            message: "Sucsessfully Get All Todos",
+            message: "Sucsessfully get all todo",
             data,
         });
     },
-    getTodoById: (req, res) => {
-
-
+    getTodoById: async (req, res) => {
+        const data = await Todos.findById(req.params.id);
+        if (!data) return res.status(404).send('Todo not found.');
+        res.json({
+            message: "Sucessfully get todo by id ",
+            data,
+        });
     },
-
     addTodo: (req, res) => {
         const data = req.body
         const newTodos = new Todos(data);
         newTodos.save();
-
         res.json({
             message: "Todo sucessfully added",
         });
-
     },
     editTodoById: async (req, res) => {
         try {
-            const todo = await Todos.findByIdAndUpdate(req.params.id, req.body, { new: true });
+            await Todos.findByIdAndUpdate(req.params.id, req.body, { new: true });
             res.json({
                 message: "Todo successfully updated",
-                data: todo,
             });
         } catch (error) {
             res.status(500).json({ message: "Todo not found, error updating todo" });
         }
     },
-    deleteAllTodo: (req, res) => {
-
+    deleteAllTodo: async (req, res) => {
+        await Todos.deleteMany({})
+        res.json({
+            message: "All todos successfully deleted",
+        });
     },
-
-    deleteTodoById: (req, res) => {
-
-
+    deleteTodoById: async (req, res) => {
+        await Todos.findByIdAndDelete(req.params.id, req.body, { new: true }),
+            res.json({
+                message: "Todo sucessfully deleted",
+            });
     }
 };
