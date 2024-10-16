@@ -2,12 +2,12 @@ const bcrypt = require('bcrypt');
 const User = require("../models/User");
 
 module.exports = {
-    register: (req, res) => {
+    register: async (req, res) => {
         const data = req.body;//menangkap data inputan 
 
         //hashing password 
         const salt = bcrypt.genSaltSync(10);
-        const hash = bcrypt.hashSync(data.password, salt);
+        const hash = await bcrypt.hashSync(data.password, salt);
         data.password = hash
 
         //menyimpan data ke database
@@ -19,7 +19,21 @@ module.exports = {
         });
 
     },
-    login: (req, res) => {
+    login: async (req, res) => {
+        const { username, password } = req.body;
+
+        //mencari data dari database
+        const user = await User.findOne({ username });
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+
+        //cek pw lalu compare dengan pw hashing
+        const checkPassword = await bcrypt.compareSync(password, user.password);
+        if (!checkPassword) return res.status(401).json({ message: "Incorrect username or password" });
+
+        res.json({
+            message: "successfully logged in"
+        });
 
     },
 }
