@@ -24,6 +24,15 @@ module.exports = {
             message: "Todo sucessfully added",
         });
     },
+
+    addTodoBulk: (req, res) => {
+        const data = req.body
+        const newTodos = Todos.insertMany(data);
+        res.json({
+            message: "All Todo sucessfully added",
+        });
+    },
+
     editTodoById: async (req, res) => {
         try {
             await Todos.findByIdAndUpdate(req.params.id, req.body, { new: true });
