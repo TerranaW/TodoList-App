@@ -28,6 +28,7 @@ module.exports = {
     addTodoBulk: (req, res) => {
         const data = req.body
         const newTodos = Todos.insertMany(data);
+        newTodos.save();
         res.json({
             message: "All Todo sucessfully added",
         });
