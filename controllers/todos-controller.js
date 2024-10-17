@@ -2,58 +2,85 @@ const Todos = require("../models/Todos");
 
 module.exports = {
     getAllTodo: async (req, res) => {
-        const data = await Todos.find({})
-        res.json({
-            message: "Sucsessfully get all todo",
-            data,
-        });
-    },
-    getTodoById: async (req, res) => {
-        const data = await Todos.findById(req.params.id);
-        if (!data) return res.status(404).send('Todo not found.');
-        res.json({
-            message: "Sucessfully get todo by id ",
-            data,
-        });
-    },
-    addTodo: (req, res) => {
-        const data = req.body
-        const newTodos = new Todos(data);
-        newTodos.save();
-        res.json({
-            message: "Todo sucessfully added",
-        });
+        try {
+            const data = await Todos.find({});
+            res.status(200).json({
+                message: "Successfully got all todos",
+                data,
+            });
+        } catch (error) {
+            res.status(500).json({ message: "Error getting todos", error });
+        }
     },
 
-    addTodoBulk: (req, res) => {
-        const data = req.body
-        const newTodos = Todos.insertMany(data);
-        newTodos.save();
-        res.json({
-            message: "All Todo sucessfully added",
-        });
+    getTodoById: async (req, res) => {
+        try {
+            const data = await Todos.findById(req.params.id);
+            if (!data) return res.status(404).send('Todo not found.');
+            res.status(200).json({
+                message: "Successfully got todo by id",
+                data,
+            });
+        } catch (error) {
+            res.status(500).json({ message: "Error getting todo by id", error });
+        }
+    },
+
+    addTodo: async (req, res) => {
+        try {
+            const newTodos = new Todos(req.body);
+            await newTodos.save();
+            res.status(201).json({
+                message: "Todo successfully added",
+            });
+        } catch (error) {
+            res.status(500).json({ message: "Error adding todo", error });
+        }
+    },
+
+    addTodoBulk: async (req, res) => {
+        try {
+            const newTodos = await Todos.insertMany(req.body);
+            res.status(201).json({
+                message: "All todos successfully added",
+            });
+        } catch (error) {
+            res.status(500).json({ message: "Error adding todos in bulk", error });
+        }
     },
 
     editTodoById: async (req, res) => {
         try {
-            await Todos.findByIdAndUpdate(req.params.id, req.body, { new: true });
-            res.json({
+            const updatedTodo = await Todos.findByIdAndUpdate(req.params.id, req.body, { new: true });
+            if (!updatedTodo) return res.status(404).send('Todo not found.');
+            res.status(200).json({
                 message: "Todo successfully updated",
             });
         } catch (error) {
-            res.status(500).json({ message: "Todo not found, error updating todo" });
+            res.status(500).json({ message: "Error updating todo", error });
         }
     },
+
     deleteAllTodo: async (req, res) => {
-        await Todos.deleteMany({})
-        res.json({
-            message: "All todos successfully deleted",
-        });
-    },
-    deleteTodoById: async (req, res) => {
-        await Todos.findByIdAndDelete(req.params.id, req.body, { new: true }),
-            res.json({
-                message: "Todo sucessfully deleted",
+        try {
+            await Todos.deleteMany({});
+            res.status(204).json({
+                message: "All todos successfully deleted",
             });
+        } catch (error) {
+            res.status(500).json({ message: "Error deleting all todos", error });
+        }
+    },
+
+    deleteTodoById: async (req, res) => {
+        try {
+            const deletedTodo = await Todos.findByIdAndDelete(req.params.id);
+            if (!deletedTodo) return res.status(404).send('Todo not found.');
+            res.status(200).json({
+                message: "Todo successfully deleted",
+            });
+        } catch (error) {
+            res.status(500).json({ message: "Error deleting todo", error });
+        }
     }
 };
