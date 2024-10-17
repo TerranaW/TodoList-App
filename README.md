@@ -154,7 +154,7 @@
   - **Status Code**: **404 (Not Found)**
       ```json
       {
-       'Todo Not Found'
+       "message": "Todo Not Found"
       }
       
   - **Status Code**: **500 (Internal Server Error)**
@@ -196,7 +196,7 @@
   - **Status Code**: **404 (Not Found)**
       ```json
       {
-       'Todo Not Found'
+       "message": "Todo Not Found"
       }
       
   - **Status Code**: **500 (Internal Server Error)**
