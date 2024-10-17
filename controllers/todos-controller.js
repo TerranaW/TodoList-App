@@ -16,7 +16,7 @@ module.exports = {
     getTodoById: async (req, res) => {
         try {
             const data = await Todos.findById(req.params.id);
-            if (!data) return res.status(404).send('Todo not found.');
+            if (!data) return res.status(404).json({ message: "Todo not found." });
             res.status(200).json({
                 message: "Successfully got todo by id",
                 data,
@@ -52,7 +52,7 @@ module.exports = {
     editTodoById: async (req, res) => {
         try {
             const updatedTodo = await Todos.findByIdAndUpdate(req.params.id, req.body, { new: true });
-            if (!updatedTodo) return res.status(404).send('Todo not found.');
+            if (!updatedTodo) return res.status(404).json({ message: "Todo not found." });
             res.status(200).json({
                 message: "Todo successfully updated",
             });
