@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors')
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -11,6 +12,7 @@ db.then(() => {
     console.log("error connecting to db")
 });
 
+app.use(cors());
 app.use(express.json());
 app.use(allRoutes);
 
